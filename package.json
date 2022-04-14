@@ -1,0 +1,27 @@
+{
+  "name": "part3-fullstack",
+  "version": "1.0.0",
+  "description": "Part 3 of Fullstack course.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Siccen2/Part3-Fullstack.git"
+  },
+  "author": "Siccen2",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Siccen2/Part3-Fullstack/issues"
+  },
+  "homepage": "https://github.com/Siccen2/Part3-Fullstack#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
