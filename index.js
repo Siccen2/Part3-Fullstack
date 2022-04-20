@@ -3,9 +3,8 @@ const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
 
-
+app.use(express.static('build'))
 app.use(cors())
-
 app.use(express.json())
 
 morgan.token('post',(req,res) => JSON.stringify(req.body))
