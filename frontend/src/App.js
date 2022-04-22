@@ -71,6 +71,7 @@ const App = () => {
       })  
     }
   }
+  
  
   const personsToShow = (filter.length === 0) ? persons :
     persons.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()))
