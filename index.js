@@ -2,7 +2,9 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
+
 require('dotenv').config()
+const Persons = require('./models/person')
 
 app.use(express.static('build'))
 app.use(cors())
@@ -11,44 +13,6 @@ app.use(express.json())
 morgan.token('post', (req, res) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post'))
 
-let persons = [
-  {
-    "id": 1,
-    "name": "Arto Hellas",
-    "number": "040-123456"
-  },
-  {
-    "id": 2,
-    "name": "Ada Lovelace",
-    "number": "39-44-5323523"
-  },
-  {
-    "id": 3,
-    "name": "Dan Abramov",
-    "number": "12-43-234345"
-  },
-  {
-    "id": 4,
-    "name": "Mary Poppendieck",
-    "number": "39-23-6423122"
-  }
-]
-
-// Mongo kode-----------------------------------
-const mongoose = require('mongoose')
-
-const url = process.env.MONGODB
-
-mongoose.connect(url)
-
-const personSchema = new mongoose.Schema({
-  name: String,
-  number: String
-})
-
-const Persons = mongoose.model('Persons', personSchema)
-
-//----------------------------------
 
 app.get('/api/persons', (request, response) => {
   Persons.find({}).then(persons => {
@@ -56,17 +20,26 @@ app.get('/api/persons', (request, response) => {
   })
 })
 
-const generateId = () => {
-  const maxId = persons.length > 0
-    ? Math.max(...persons.map(n => n.id))
-    : 0
-  return maxId + 1
-}
-
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
-  //Check if names are the same
+  if (body.name === undefined) {
+    return response.status(400).json({ error: 'content missing' })
+  }
+
+  const persons = new Persons({
+    
+    name: body.name,
+    number: body.number,
+
+  })
+
+  persons.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
+})
+
+ /* //Check if names are the same
   if (persons.find(person => person.name === body.name)) {
     return response.status(400).json({
       error: 'name already exist'
@@ -95,7 +68,8 @@ app.post('/api/persons', (request, response) => {
   persons = persons.concat(person)
 
   response.json(person)
-})
+
+})*/
 
 
 
@@ -121,15 +95,13 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
-
-
 app.get('/infos', (request, response) => {
   const length = persons.length
   const date = new Date()
   response.send(`<p>Phonebook has info for ${length} people</p><p>${date}</p>`)
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
