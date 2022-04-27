@@ -6,7 +6,7 @@ import Notification from './components/Notification'
 import personService from './services/persons'
 
 const App = () => {
-  const [persons, setPersons] = useState([]) 
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
@@ -14,11 +14,11 @@ const App = () => {
 
   useEffect(() => {
     personService.getAll().then(persons => {
-      setPersons(persons)
+        setPersons(persons)
     })
   }, [])
 
-  const notify = (message, type='info') => {
+  const notify = (message, type = 'info') => {
     setNotification({ message, type })
     setTimeout(() => {
       setNotification(null)
@@ -36,43 +36,50 @@ const App = () => {
     setNewNumber('')
 
     const existingPerson = persons.find(p => p.name === newPerson.name)
-    if ( existingPerson ) {
+    if (existingPerson) {
       const ok = window.confirm(`${existingPerson.name} is already added to phonebook, update the number?`)
-      if ( ok ) {
+      if (ok) {
 
-        personService.update(existingPerson.id, {...existingPerson, number: newNumber }).then(savedPerson => {
-          setPersons(persons.map(p => p.id === existingPerson.id ? savedPerson : p ))
+        personService.update(existingPerson.id, { ...existingPerson, number: newNumber }).then(savedPerson => {
+          setPersons(persons.map(p => p.id === existingPerson.id ? savedPerson : p))
           notify(`Updated info of ${savedPerson.name}`)
         })
-        .catch(error => {
-          notify(
-            `the person '${existingPerson.name}' was had already been from the server`, 'alert'
-          )
-          setPersons(persons.filter(p => p.id !== existingPerson.id))
-        })
+          .catch(error => {
+            notify(
+              `the person '${existingPerson.name}' was had already been from the server`, 'alert'
+            )
+            setPersons(persons.filter(p => p.id !== existingPerson.id))
+          })
 
-        return 
+        return
       }
     }
 
-    personService.create(newPerson).then(savedPerson => {
+    personService
+    .create(newPerson)
+    .then(savedPerson => {
       setPersons(persons.concat(savedPerson))
       notify(`Added ${savedPerson.name}`)
     })
+    .catch(error => {
+      
+      notify(error.response.data.error) 
+      
+    })
   }
 
-  const deletePerson = (id) => { 
+  const deletePerson = (id) => {
     const toDelete = persons.find(p => p.id === id)
     const ok = window.confirm(`Delete ${toDelete.name}`)
     if (ok) {
       personService.remove(id).then(() => {
         setPersons(persons.filter(p => p.id !== id))
         notify(`Deleted ${toDelete.name}`)
-      })  
+      })
     }
   }
-  
- 
+
+
   const personsToShow = (filter.length === 0) ? persons :
     persons.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()))
 
@@ -84,7 +91,7 @@ const App = () => {
         value={filter}
         handleChange={({ target }) => setFilter(target.value)}
       />
-      <PersonForm 
+      <PersonForm
         name={newName}
         number={newNumber}
         handleNameChange={({ target }) => setNewName(target.value)}
