@@ -30,10 +30,10 @@ if (process.argv.length == 5) {
     
   })
 
-  note.save().then(result => {
-    console.log(`Added: ${process.argv[3]} Number: ${process.argv[4]} to phonebook`)
+  note.save().then(
+    console.log(`Added: ${process.argv[3]} Number: ${process.argv[4]} to phonebook`),
     mongoose.connection.close()
-  })
+  )
 }
 else {
   Persons.find({}).then(result => {

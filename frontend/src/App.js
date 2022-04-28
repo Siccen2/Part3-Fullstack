@@ -63,7 +63,7 @@ const App = () => {
     })
     .catch(error => {
       
-      notify(error.response.data.error) 
+      notify(error.response.data.error, 'alert') 
       
     })
   }

@@ -20,6 +20,6 @@ const remove = (id) => {
   return axios.delete(`${baseUrl}/${id}`)
 }
 
-export default { 
-  getAll, create, update, remove 
-}
+const send = {getAll, create, update, remove}
+
+export default send
